@@ -1,0 +1,116 @@
+def main():
+    """
+    Defino una funcion main para operar todo desde aquí
+    """
+    biblioteca = []
+    opcion = ""
+    print("\n========== BIBLIOTECA ==========")
+    while opcion != "7":
+        #el while se va a ejecutar hasta que el usuario ingrese 7
+        menu()
+        opcion = input("Seleccione una opcion: ")
+        match opcion:
+            case "1":
+                LIBRO = registrar_libro(biblioteca)  
+                if LIBRO: #confirmo que me haya devuelto una tupla y no None
+                    biblioteca.append(LIBRO)
+            case "2": biblioteca = mostrar_catalogo(biblioteca)
+            case "3": buscar_libro(biblioteca)
+            case "4": pass #prestar_libro()
+            case "5": pass #devolver_libro()
+            case "6": pass #estadisticas()
+            case "7": print("Adios!")
+            case _: print("Error")
+    return
+def menu():
+    """
+    Muestra el menu principal del sistema.
+    """
+    print("\n========== MENU ==========")
+    print("1. Registrar libro")
+    print("2. Mostrar catalogo")
+    print("3. Buscar libro")
+    print("4. Prestar libro")
+    print("5. Devolver libro")
+    print("6. Ver estadisticas")
+    print("7. Salir")
+    print("=============================")
+        
+
+def registrar_libro(biblioteca):
+    """
+    Permite ingresar un nuevo libro.
+    """
+    
+    print("-----------------------------")
+    # Usamos any para comprobar si hay al menos un ID que ya este ingresado
+    # y retornamos None 
+    print("Para registrar un nuevo libro por favor ingrese el ID númerico")
+    ID = int(input())
+
+    if any(LIBRO[0] == ID for LIBRO in biblioteca):
+        print("Lo sentimos, el ID ingresado ya esta en uso")
+        return None
+    else:
+        # Si no se encuentra ningun ID repetido 
+        # se puede ingresar el nuevo libro
+        TITULO = input("Ingrese el titulo del libro: ").title()
+        AUTOR = input("Ingrese el autor del libro: ")
+        ANIO = input("Y su año de publicación: ")
+        LIBRO =(ID, TITULO, AUTOR, ANIO, True)
+        print("El libro a sido agregado con exito.")
+        return LIBRO
+
+
+def mostrar_catalogo(biblioteca):
+    """
+    Muestra todos los libros cargados.
+    """
+    #aquí ordeno la biblioteca en orden alfabetico
+    biblioteca.sort(key=lambda libro: libro[1])
+
+    #compruebo de que la lista no este vacia
+    if not biblioteca:
+        print("Lo sentimos pero no hay libros disponibles.")
+        return None
+    
+    print("--CATALOGO DE LA BIBLIOTECA--")
+    for i in range (len(biblioteca)):
+        #recorro la lista para mostrar todos los libros 
+        #uso una variable estado para el valor booleando de la tupla
+        estado = "Disponible" if biblioteca[i][4] else "No disponible"
+        print(f"ID: {biblioteca[i][0]} | Titulo: {biblioteca[i][1]} | {estado}")
+    # Retorno la biblioteca ahora ordenada alfabeticamente
+    return biblioteca
+        
+
+def buscar_libro(biblioteca):
+    """
+    Busca libros por titulo o autor
+    """
+    print("Desea buscar un libro por su título(1) o por el autor(2):")
+    op = int(input())
+    match op:
+        case 1: 
+            encontrado = False      #Uso una bandera para confirmar si se encontro algo
+            buscar = input("Buscar: ").lower()
+            for i in range (len(biblioteca)):
+                if buscar in biblioteca[i][1].lower():
+                    print(f"- {biblioteca[i][1]}")
+                    encontrado = True
+                if encontrado == False: 
+                    print(f"Lo sentimos, no se han encontrado coincidencias para {buscar}")
+                    break
+        case 2: 
+            encontrado = False
+            buscar = input("Buscar: ").lower()
+            for i in range (len(biblioteca)):
+                if buscar in biblioteca[i][2]:
+                    print(f"- {biblioteca[i][2]}")
+                    encontrado = True
+                if encontrado == False:
+                    print(f"Lo sentimos, no se encontraron coicidencias para {buscar}")
+        case _:print("Opción no valida")
+    return
+
+main()
